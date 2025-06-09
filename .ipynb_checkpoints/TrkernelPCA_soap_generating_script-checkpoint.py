@@ -28,11 +28,11 @@ with Pool() as pool:
         # mof_structures[filename] = structure
         # species[filename] = sorted(set(structure.get_chemical_symbols()))
         soap_out, soap = S(structure, species)  
-        kpca_out = kernelPCA(soap_out)
-        df = pd.DataFrame([kpca_out], columns = columns(list(species), n_max, l_max))
+        kpca_out = kernelPCA(soap_out, Tr = True)
+        df = pd.DataFrame([kpca_out], columns = columns(list(species), l_max, n_max))
         df['filename'] = filename
         df = df.reindex(columns=soap_df.columns.union(df.columns, sort=False), fill_value=0)
         soap_df = soap_df.reindex(columns=df.columns.union(soap_df.columns, sort=False), fill_value=0)
         soap_df = pd.concat([soap_df, df], ignore_index=True)
 
-soap_df.to_csv('kernelPCA_soap_mofs.csv', index=False)  # `index=False` to avoid writing row numbers
+soap_df.to_csv('TrkernelPCA_soap_mofs.csv', index=False)  # `index=False` to avoid writing row numbers

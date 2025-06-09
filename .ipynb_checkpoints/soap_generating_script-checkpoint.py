@@ -22,10 +22,10 @@ def S(species):
     soap = SOAP(
         species=species,
         periodic=False,
-        r_cut=8.0,
+        # r_cut=8.0,
         n_max= n_max,
         l_max= l_max,
-        sigma = 0.2,
+        # sigma = 0.2,
         average = 'inner',
         sparse=False
     )
@@ -72,8 +72,8 @@ with Pool() as pool:
 
 mof_items = list(mof_structures.items())
 union_species = combine_lists(species)
-n_max = 8
-l_max = 6
+n_max = 1
+l_max = 1
 
 soap_df = pd.DataFrame(columns = columns(union_species, l_max, n_max))
 soap = S(union_species)
