@@ -1,6 +1,6 @@
 from ase.io import read
 import pandas as pd
-from columns import slice_column
+from columns import slice_column, columns
 import numpy as np
 import matplotlib.pyplot as plt
 from ase import Atoms
@@ -22,10 +22,10 @@ def S(species):
     soap = SOAP(
         species=species,
         periodic=False,
-        r_cut=8.0,
-        n_max= 8,
-        l_max= 6,
-        sigma = 0.2,
+        r_cut=5.0,
+        n_max= 1,
+        l_max= 1,
+        # sigma = 0.2,
         average = 'inner',
         sparse=False
     )
@@ -43,8 +43,8 @@ filenames = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if os
 mof_structures = {}
 species = {}
 
-n_max = 8
-l_max = 6
+n_max = 1
+l_max = 1
 
 soap_df = pd.DataFrame()
     
@@ -52,12 +52,12 @@ soap_df = pd.DataFrame()
 with Pool() as pool:
     for filename, structure in tqdm(pool.imap_unordered(read_cif, filenames), total=len(filenames), desc="Reading CIFs"):
         mof_structures[filename] = structure
-        species[filename] = sorted(set(structure.get_chemical_symbols()))
+        species[filename] = set(structure.get_chemical_symbols())
         soap = S(species[filename])  
-        df = pd.DataFrame([soap.create(mof_structures[filename]).flatten()], columns = slice_column(soap, species[filename]))
+        df = pd.DataFrame([soap.create(mof_structures[filename]).flatten()], columns = columns(list(species[filename]), n_max, l_max))
         df['filename'] = filename
         df = df.reindex(columns=soap_df.columns.union(df.columns, sort=False), fill_value=0)
         soap_df = soap_df.reindex(columns=df.columns.union(soap_df.columns, sort=False), fill_value=0)
         soap_df = pd.concat([soap_df, df], ignore_index=True)
 
-soap_df.to_csv('averaged_local_soap_mofs.csv', index=False)  # `index=False` to avoid writing row numbers
+soap_df.to_csv('inner_averaged_local_soap_mofs.csv', index=False)  # `index=False` to avoid writing row numbers

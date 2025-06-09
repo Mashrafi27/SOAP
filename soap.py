@@ -35,18 +35,25 @@ def compute_soap(item):
     descriptors = soap.create(structure, n_jobs = -1)
     return filename, descriptors
 
-def kernelPCA(soap_out):
+def kernelPCA(soap_out, Tr = False):
 
     def rbf_kernel(u, v, gamma=1e-3):
         diff = u - v
         return np.exp(-gamma * (diff @ diff))
     
     N_env, N_feat = soap_out.shape
+    if Tr:
+        N = N_feat
+    else:
+        N = N_env
     
-    K = np.zeros((N_env, N_env))
-    for i in range(N_env):
-        for j in range(N_env):
-            K[i, j] = rbf_kernel(soap_out[i], soap_out[j], gamma=1e-3)
+    K = np.zeros((N, N))
+    for i in range(N):
+        for j in range(N):
+            if Tr:
+                K[i, j] = rbf_kernel(soap_out[:,i], soap_out[:,j], gamma=1e-3)
+            else:    
+                K[i, j] = rbf_kernel(soap_out[i], soap_out[j], gamma=1e-3)
     
     eigvals, eigvecs = np.linalg.eigh(K)
     alpha = eigvecs[:, -1]       # shape = (N_env,)
@@ -54,6 +61,11 @@ def kernelPCA(soap_out):
     alpha = alpha / np.linalg.norm(alpha)
     
     # --- 3) Form the weighted‐sum row d = alpha^T @ soap_out ---
-    d = alpha.reshape(1, N_env) @ soap_out   # shape = (1, N_feat)
+    
+
+    if Tr:
+        d = (soap_out * alpha).mean(axis=0, keepdims=True)
+    else:
+        d = alpha.reshape(1, N_env) @ soap_out   # shape = (1, N_feat)
 
     return d[0]
