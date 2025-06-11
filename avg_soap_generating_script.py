@@ -54,7 +54,7 @@ with Pool() as pool:
         mof_structures[filename] = structure
         species[filename] = set(structure.get_chemical_symbols())
         soap = S(species[filename])  
-        df = pd.DataFrame([soap.create(mof_structures[filename]).flatten()], columns = columns(list(species[filename]), n_max, l_max))
+        df = pd.DataFrame([soap.create(mof_structures[filename]).flatten()], columns = slice_column(list(species[filename]), n_max, l_max))
         df['filename'] = filename
         df = df.reindex(columns=soap_df.columns.union(df.columns, sort=False), fill_value=0)
         soap_df = soap_df.reindex(columns=df.columns.union(soap_df.columns, sort=False), fill_value=0)

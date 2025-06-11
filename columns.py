@@ -27,7 +27,7 @@ import itertools
 def slice_column(soap, species):
     
     col_names = []
-
+    species = sorted(species)
     # Iterate over all combinations_with_replacement of your species
     # This must match the (i,j) ordering that SOAP itself uses under the hood.
     for sp1, sp2 in itertools.combinations_with_replacement(species, 2):
