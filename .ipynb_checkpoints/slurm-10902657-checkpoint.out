@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/avg_soap_generating_script.py", line 1, in <module>
+    from ase.io import read
+ModuleNotFoundError: No module named 'ase'
