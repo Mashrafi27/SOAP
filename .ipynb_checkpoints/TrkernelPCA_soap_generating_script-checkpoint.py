@@ -29,7 +29,7 @@ with Pool() as pool:
         # species[filename] = sorted(set(structure.get_chemical_symbols()))
         soap_out, soap = S(structure, species)  
         kpca_out = kernelPCA(soap_out, Tr = True)
-        df = pd.DataFrame([kpca_out], columns = columns(list(species), l_max, n_max))
+        df = pd.DataFrame([kpca_out], columns = slice_column(soap, list(species)))
         df['filename'] = filename
         df = df.reindex(columns=soap_df.columns.union(df.columns, sort=False), fill_value=0)
         soap_df = soap_df.reindex(columns=df.columns.union(soap_df.columns, sort=False), fill_value=0)
