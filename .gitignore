@@ -2,3 +2,7 @@
 *.log
 *.cif
 deepcdp/
+*.pkl
+*.npz
+*.png
+*.jpg
