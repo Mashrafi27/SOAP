@@ -1,0 +1,5 @@
+../CIF_files/DB15-cdl_N87_E158_opt_repeat.chan   3 channels identified of dimensionality 1 1 1 
+Channel  0  6.14533  4.98127  5.85103
+Channel  1  6.52576  4.42334  6.52576
+Channel  2  6.53117  5.12059  6.53117
+../CIF_files/DB15-cdl_N87_E158_opt_repeat.chan summary(Max_of_columns_above)   6.53117 5.12059  6.53117  probe_rad: 1.9  probe_diam: 3.8
