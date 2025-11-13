@@ -8,6 +8,10 @@ from dscribe.descriptors import SOAP
 import os
 from tqdm import tqdm
 from multiprocessing import Pool
+from torch_geometric.nn.aggr import SetTransformerAggregation
+import torch
+from sklearn.decomposition import PCA
+
 
 def read_cif(file_path):
     structure = read(file_path)
@@ -35,7 +39,35 @@ def compute_soap(item):
     descriptors = soap.create(structure, n_jobs = -1)
     return filename, descriptors
 
-def kernelPCA(soap_out, Tr = False):
+def max_pool(soap_out):
+    return np.max(soap_out, axis=0)
+
+def pca(soap_out):
+    data_2d = np.array(soap_out)
+    result = []
+    
+    # Apply PCA to each column
+    for col_idx in range(data_2d.shape[1]):
+        column = data_2d[:, col_idx].reshape(-1, 1)
+        
+        # PCA with 1 component
+        pca = PCA(n_components=1)
+        pca_result = pca.fit_transform(column)
+        
+        # Extract the single principal component value
+        result.append(pca_result.flatten()[0])
+    
+    return np.array(result)
+
+
+def set_transform_aggregation(soap_out, encoder_decoder):
+    # encoder_decoder = SetTransformerAggregation(soap_out.shape[1])
+    soap_tensor = torch.FloatTensor(soap_out)
+    group_indices = torch.zeros(soap_tensor.shape[0], dtype=torch.long)
+    output = encoder_decoder.forward(soap_tensor, index = group_indices)
+    return output[0].detach().numpy()
+
+def kernelPCA(soap_out, Tr = False, avg = False):
 
     def rbf_kernel(u, v, gamma=1e-3):
         diff = u - v
@@ -68,4 +100,7 @@ def kernelPCA(soap_out, Tr = False):
     else:
         d = alpha.reshape(1, N_env) @ soap_out   # shape = (1, N_feat)
 
-    return d[0]
+    if avg:
+        return d[0]/N_env
+    else:
+        return d[0]

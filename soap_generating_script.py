@@ -22,7 +22,7 @@ def S(species):
     soap = SOAP(
         species=species,
         periodic=False,
-        # r_cut=8.0,
+        r_cut= 5.0,
         n_max= n_max,
         l_max= l_max,
         # sigma = 0.2,
@@ -59,7 +59,7 @@ def combine_lists(dict_of_lists, operation='union'):
     else:
         raise ValueError("Operation must be 'union' or 'intersection'")
 
-folder_path = './CIF_files'
+folder_path = './comb_CIF_files'
 filenames = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
 
 mof_structures = {}
@@ -87,4 +87,4 @@ with Pool() as pool:
         # df["filename"] = filename  # Optional: track origin
         soap_df = pd.concat([soap_df, df], ignore_index=True)
 
-soap_df.to_csv('averaged_local_soap_mofs.csv', index=False)  # `index=False` to avoid writing row numbers
+soap_df.to_csv('averaged_local_soap_mofs_6k.csv', index=False)  # `index=False` to avoid writing row numbers

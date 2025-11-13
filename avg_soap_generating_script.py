@@ -26,7 +26,7 @@ def S(species):
         n_max= 1,
         l_max= 1,
         # sigma = 0.2,
-        average = 'inner',
+        average = 'outer',
         sparse=False
     )
     return soap
@@ -37,7 +37,7 @@ def compute_soap(item):
     return filename, descriptors
 
 
-folder_path = './CIF_files'
+folder_path = './comb_CIF_files'
 filenames = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
 
 mof_structures = {}
@@ -60,4 +60,4 @@ with Pool() as pool:
         soap_df = soap_df.reindex(columns=df.columns.union(soap_df.columns, sort=False), fill_value=0)
         soap_df = pd.concat([soap_df, df], ignore_index=True)
 
-soap_df.to_csv('inner_averaged_local_soap_mofs.csv', index=False)  # `index=False` to avoid writing row numbers
+soap_df.to_csv('outer_averaged_local_soap_mofs_6k.csv', index=False)  # `index=False` to avoid writing row numbers
