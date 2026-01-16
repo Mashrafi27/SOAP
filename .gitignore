@@ -14,3 +14,4 @@ soap_pipeline_clean/outputs/**
 soap_pipeline_clean/outputs_logs/
 soap_pipeline_clean/batch_runs/
 SOAP_descriptors/
+legacy_pipeline/averaged_local_soap_mofs.csv
