@@ -1,6 +1,4 @@
-*.csv
 *.log
-*.cif
 *.chan
 deepcdp/
 *.pkl
