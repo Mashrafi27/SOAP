@@ -1,0 +1,103 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            1ou9ypl6tvas6poykxbodiwp5ddzc5cr:
+                codePath: Attention_Aggregation/model.py
+                codePathLocal: model.py
+                cpu_count: 28
+                cpu_count_logical: 28
+                disk:
+                    /:
+                        total: "10737418240"
+                        used: "2247106560"
+                email: mmm9886@nyu.edu
+                executable: /home/mmm9886/.conda/envs/soap_analysis/bin/python
+                git:
+                    commit: e67a993d0ef458503d846bc072ebe3c481a51519
+                    remote: git@github.com:Mashrafi27/SOAP.git
+                host: dn184
+                memory:
+                    total: "134787178496"
+                os: Linux-4.18.0-193.6.3.el8_2.x86_64-x86_64-with-glibc2.28
+                program: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Attention_Aggregation/model.py
+                python: CPython 3.9.23
+                root: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Attention_Aggregation
+                slurm:
+                    cluster_name: hpc
+                    conf: /opt/slurm/etc/slurm.conf
+                    cpus_on_node: "20"
+                    cpus_per_task: "20"
+                    export_env: NONE
+                    get_user_env: "1"
+                    gtids: "0"
+                    job_account: students
+                    job_cpus_per_node: "20"
+                    job_gid: "100"
+                    job_id: "11068857"
+                    job_name: model.sh
+                    job_nodelist: dn184
+                    job_num_nodes: "1"
+                    job_partition: compute
+                    job_qos: small
+                    job_uid: "3621466"
+                    job_user: mmm9886
+                    jobid: "11068857"
+                    localid: "0"
+                    mem_per_cpu: "3750"
+                    nnodes: "1"
+                    node_aliases: (null)
+                    nodeid: "0"
+                    nodelist: dn184
+                    prio_process: "0"
+                    procid: "0"
+                    submit_dir: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Attention_Aggregation
+                    submit_host: dn031
+                    task_pid: "896716"
+                    tasks_per_node: "1"
+                    topology_addr: dn-spine.dn15.dn184
+                    topology_addr_pattern: switch.switch.node
+                    working_cluster: hpc:slurm:6816:9216:109
+                startedAt: "2025-07-02T09:33:30.538408Z"
+                writerId: 1ou9ypl6tvas6poykxbodiwp5ddzc5cr
+        m: []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+                - 77
+                - 105
+            "2":
+                - 1
+                - 5
+                - 53
+                - 77
+                - 105
+            "3":
+                - 16
+            "4": 3.9.23
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": linux-x86_64
+batch_size:
+    value: 100
+dropout:
+    value: 0.3
+epochs:
+    value: 50
+heads:
+    value: 4
+learning_rate:
+    value: 0.001
+loss_metric:
+    value: mae
+num_decoder_blocks:
+    value: 1
+num_encoder_blocks:
+    value: 2
+num_seed_points:
+    value: 3
+patience:
+    value: 20

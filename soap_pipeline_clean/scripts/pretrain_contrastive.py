@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
+import wandb
 from torch.utils.data import DataLoader
 from tqdm import trange
 
@@ -34,7 +35,9 @@ def load_labels(path: Path) -> pd.Series:
 
 
 def load_manifest(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path)
+    df = pd.read_csv(path)
+    df["filename"] = df["filename"].str.strip()
+    return df
 
 
 def augment_batch(x, lengths, atom_drop: float, feature_drop: float):
@@ -68,7 +71,22 @@ def simclr_loss(z1, z2, temperature: float):
 
 def pretrain(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    wandb.login(key="2f1002514629c6ffe0f9d6d1fe10914998145aa7")
     manifest = load_manifest(args.manifest)
+    base_df = manifest[manifest["origin"] == "original"].sort_values("combined_rank")
+    base_ids = base_df.head(args.base_size)["filename"].tolist()
+    if len(base_ids) < args.base_size:
+        raise ValueError(f"Requested base_size={args.base_size} but only found {len(base_ids)} originals.")
+    new_df = manifest[manifest["origin"] == "new"].sort_values("new_index")
+    new_ids = new_df.head(args.new_count)["filename"].tolist()
+    selected_ids = set(base_ids + new_ids)
+    manifest = manifest[manifest["filename"].isin(selected_ids)].reset_index(drop=True)
+
+    wandb.init(
+        project="mof-settransformer",
+        name=f"contrastive_latent{args.latent_dim}_base{args.base_size}_new{args.new_count}",
+        config=vars(args),
+    )
     labels = load_labels(args.labels)
     meta = json.loads(args.soap_meta.read_text())
     feature_cols = meta["feature_labels"]
@@ -114,13 +132,16 @@ def pretrain(args: argparse.Namespace) -> None:
             optimizer.step()
             epoch_loss += loss.item()
 
-        print(f"Epoch {epoch} contrastive loss: {epoch_loss / len(loader):.4f}")
+        avg_loss = epoch_loss / len(loader)
+        print(f"Epoch {epoch} contrastive loss: {avg_loss:.4f}")
+        wandb.log({"epoch": epoch, "contrastive_loss": avg_loss})
 
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
     torch.save({"model": encoder.state_dict(), "config": vars(args)}, output_dir / "encoder.pt")
 
     export_embeddings(encoder, manifest, args.soap_dir, feature_cols, max_atoms, output_dir / "embeddings.csv", device)
+    wandb.finish()
 
 
 def export_embeddings(
@@ -164,6 +185,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--soap-meta", type=Path, default=ROOT / "soap_pipeline_clean/outputs/soap_2d/manifest.json")
     parser.add_argument("--labels", type=Path, default=ROOT / "comb_id_labels.csv")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "soap_pipeline_clean/outputs/set_transformer/contrastive")
+    parser.add_argument("--base-size", type=int, default=3089, help="Number of original MOFs to include (from CIF_files).")
+    parser.add_argument("--new-count", type=int, default=0, help="Number of new MOFs to add from the extra 3k.")
     parser.add_argument("--epochs", type=int, default=50)
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--lr", type=float, default=1e-3)

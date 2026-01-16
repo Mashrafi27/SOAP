@@ -14,6 +14,7 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 import torch
+import wandb
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from torch.utils.data import DataLoader
 from tqdm import trange
@@ -67,6 +68,12 @@ def evaluate(model, loader: DataLoader, device: torch.device) -> Dict[str, float
 
 def train(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    wandb.login(key="2f1002514629c6ffe0f9d6d1fe10914998145aa7")
+    wandb.init(
+        project="mof-settransformer",
+        config=vars(args),
+        name=f"regressor_{'orig' if args.original_only else 'full'}_{args.seed}",
+    )
     manifest = load_manifest(args.manifest, use_original_only=args.original_only)
     labels = load_labels(args.labels)
     meta = json.loads(args.soap_meta.read_text())
@@ -106,6 +113,7 @@ def train(args: argparse.Namespace) -> None:
 
     for epoch in trange(1, args.epochs + 1, desc="Training"):
         model.train()
+        epoch_losses = []
         for batch in train_loader:
             x, lengths, labels_batch = batch
             x = x.to(device)
@@ -118,9 +126,19 @@ def train(args: argparse.Namespace) -> None:
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            epoch_losses.append(loss.item())
 
         scheduler.step()
         val_metrics = evaluate(model, val_loader, device)
+        wandb.log(
+            {
+                "epoch": epoch,
+                "train_loss": np.mean(epoch_losses),
+                "val_mae": val_metrics["mae"],
+                "val_rmse": val_metrics["rmse"],
+                "val_r2": val_metrics["r2"],
+            }
+        )
         if val_metrics["mae"] < best_val_mae:
             best_val_mae = val_metrics["mae"]
             best_state = {
@@ -147,6 +165,17 @@ def train(args: argparse.Namespace) -> None:
     (output_dir / "metrics.json").write_text(json.dumps(summary, indent=2))
     print("Best validation metrics:", best_state["val_metrics"])
     print("Test metrics:", test_metrics)
+    wandb.log(
+        {
+            "best_val_mae": best_state["val_metrics"]["mae"],
+            "best_val_rmse": best_state["val_metrics"]["rmse"],
+            "best_val_r2": best_state["val_metrics"]["r2"],
+            "test_mae": test_metrics["mae"],
+            "test_rmse": test_metrics["rmse"],
+            "test_r2": test_metrics["r2"],
+        }
+    )
+    wandb.finish()
 
 
 def parse_args() -> argparse.Namespace:

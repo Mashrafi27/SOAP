@@ -1,0 +1,9 @@
+wandb: Appending key for api.wandb.ai to your netrc file: /home/mmm9886/.netrc
+wandb: Currently logged in as: mashrafimonon (mashrafimonon-new-york-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.21.0
+wandb: Run data is saved locally in /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Attention_Aggregation/wandb/run-20250710_134804-k9b17a4r
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run drawn-armadillo-29
+wandb: ⭐️ View project at https://wandb.ai/mashrafimonon-new-york-university/mof-settransformer
+wandb: 🚀 View run at https://wandb.ai/mashrafimonon-new-york-university/mof-settransformer/runs/k9b17a4r
+slurmstepd: error: *** JOB 11162729 ON cn007 CANCELLED AT 2025-07-10T14:12:05 ***

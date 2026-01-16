@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Final_Attention/inference.py", line 11, in <module>
+    from training_pipeline import (
+ModuleNotFoundError: No module named 'training_pipeline'

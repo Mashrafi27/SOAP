@@ -1,0 +1,25 @@
+Reading CIFs:   0%|          | 0/3089 [00:00<?, ?it/s]/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+/home/mmm9886/.conda/envs/pyemma/lib/python3.9/site-packages/ase/io/cif.py:408: UserWarning: crystal system 'triclinic' is not interpreted for space group Spacegroup(1, setting=1). This may result in wrong setting!
+  warnings.warn(
+Reading CIFs:   0%|          | 0/3089 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/kernelPCA_soap_generating_script.py", line 31, in <module>
+    kpca_out = kernelPCA(soap_out, avg = True)
+  File "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap.py", line 71, in kernelPCA
+    if Avg:
+NameError: name 'Avg' is not defined

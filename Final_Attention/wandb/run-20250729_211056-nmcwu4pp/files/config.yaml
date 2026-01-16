@@ -1,0 +1,113 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            x10a3uj45qj9fu1fnxv5q0kphe2zw9rb:
+                codePath: Final_Attention/model.py
+                codePathLocal: model.py
+                cpu_count: 40
+                cpu_count_logical: 40
+                cudaVersion: "12.2"
+                disk:
+                    /:
+                        total: "10737418240"
+                        used: "5448740864"
+                email: mmm9886@nyu.edu
+                executable: /home/mmm9886/.conda/envs/soap_analysis/bin/python
+                git:
+                    commit: e67a993d0ef458503d846bc072ebe3c481a51519
+                    remote: git@github.com:Mashrafi27/SOAP.git
+                gpu: Tesla V100-PCIE-32GB
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-PCIE-32GB
+                      uuid: GPU-4bd54fdf-dc45-c1f7-303a-93d22792b844
+                host: dn003
+                memory:
+                    total: "404863479808"
+                os: Linux-4.18.0-513.5.1.el8_9.x86_64-x86_64-with-glibc2.28
+                program: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Final_Attention/model.py
+                python: CPython 3.9.23
+                root: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Final_Attention
+                slurm:
+                    cluster_name: hpc
+                    conf: /opt/slurm/etc/slurm.conf
+                    cpus_on_node: "1"
+                    cpus_per_task: "1"
+                    export_env: NONE
+                    get_user_env: "1"
+                    gtids: "0"
+                    job_account: students
+                    job_cpus_per_node: "1"
+                    job_gid: "100"
+                    job_gpus: "1"
+                    job_id: "11340587"
+                    job_name: model.sh
+                    job_nodelist: dn003
+                    job_num_nodes: "1"
+                    job_partition: nvidia
+                    job_qos: nvidias
+                    job_uid: "3621466"
+                    job_user: mmm9886
+                    jobid: "11340587"
+                    localid: "0"
+                    mem_per_cpu: "3750"
+                    nnodes: "1"
+                    node_aliases: (null)
+                    nodeid: "0"
+                    nodelist: dn003
+                    prio_process: "0"
+                    procid: "0"
+                    submit_dir: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Final_Attention
+                    submit_host: dn285
+                    task_pid: "1687888"
+                    tasks_per_node: "1"
+                    topology_addr: dn-spine.dn21.dn003
+                    topology_addr_pattern: switch.switch.node
+                    working_cluster: hpc:slurm:6816:9216:109
+                startedAt: "2025-07-29T17:10:56.046636Z"
+                writerId: x10a3uj45qj9fu1fnxv5q0kphe2zw9rb
+        m: []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+                - 77
+                - 105
+            "2":
+                - 1
+                - 5
+                - 53
+                - 77
+                - 105
+            "3":
+                - 16
+            "4": 3.9.23
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": linux-x86_64
+batch_size:
+    value: 100
+dropout:
+    value: 0.3
+epochs:
+    value: 50
+heads:
+    value: 4
+learning_rate:
+    value: 0.001
+loss_metric:
+    value: mae
+num_decoder_blocks:
+    value: 1
+num_encoder_blocks:
+    value: 2
+num_seed_points:
+    value: 1
+patience:
+    value: 20

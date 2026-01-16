@@ -1,0 +1,77 @@
+{
+  "os":  "Linux-4.18.0-513.5.1.el8_9.x86_64-x86_64-with-glibc2.28",
+  "python":  "CPython 3.9.23",
+  "startedAt":  "2025-07-29T17:02:46.378298Z",
+  "program":  "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Final_Attention/model.py",
+  "codePath":  "Final_Attention/model.py",
+  "codePathLocal":  "model.py",
+  "git":  {
+    "remote":  "git@github.com:Mashrafi27/SOAP.git",
+    "commit":  "e67a993d0ef458503d846bc072ebe3c481a51519"
+  },
+  "email":  "mmm9886@nyu.edu",
+  "root":  "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Final_Attention",
+  "host":  "dn006",
+  "executable":  "/home/mmm9886/.conda/envs/soap_analysis/bin/python",
+  "cpu_count":  40,
+  "cpu_count_logical":  40,
+  "gpu":  "Tesla V100-PCIE-32GB",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "10737418240",
+      "used":  "5448781824"
+    }
+  },
+  "memory":  {
+    "total":  "404863483904"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "Tesla V100-PCIE-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-b0e1feff-3ffc-b8ef-9e6e-6b9272c6916c"
+    }
+  ],
+  "cudaVersion":  "12.2",
+  "slurm":  {
+    "cluster_name":  "hpc",
+    "conf":  "/opt/slurm/etc/slurm.conf",
+    "cpus_on_node":  "1",
+    "cpus_per_task":  "1",
+    "export_env":  "NONE",
+    "get_user_env":  "1",
+    "gtids":  "0",
+    "job_account":  "students",
+    "job_cpus_per_node":  "1",
+    "job_gid":  "100",
+    "job_gpus":  "0",
+    "job_id":  "11340534",
+    "job_name":  "model.sh",
+    "job_nodelist":  "dn006",
+    "job_num_nodes":  "1",
+    "job_partition":  "nvidia",
+    "job_qos":  "nvidias",
+    "job_uid":  "3621466",
+    "job_user":  "mmm9886",
+    "jobid":  "11340534",
+    "localid":  "0",
+    "mem_per_cpu":  "3750",
+    "nnodes":  "1",
+    "node_aliases":  "(null)",
+    "nodeid":  "0",
+    "nodelist":  "dn006",
+    "prio_process":  "0",
+    "procid":  "0",
+    "submit_dir":  "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/Final_Attention",
+    "submit_host":  "dn285",
+    "task_pid":  "522122",
+    "tasks_per_node":  "1",
+    "topology_addr":  "dn-spine.dn21.dn006",
+    "topology_addr_pattern":  "switch.switch.node",
+    "working_cluster":  "hpc:slurm:6816:9216:109"
+  },
+  "writerId":  "dulrka4gpm8t8zhop5tb6q2xhb8ei9ud"
+}
