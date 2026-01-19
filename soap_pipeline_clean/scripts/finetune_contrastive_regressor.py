@@ -12,6 +12,7 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 import torch
+import wandb
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from torch.utils.data import DataLoader
 from tqdm import trange
@@ -83,6 +84,14 @@ def set_encoder_requires_grad(model: SetTransformerRegressor, requires_grad: boo
 
 def train(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if args.wandb:
+        wandb.login()
+        wandb.init(
+            project=args.wandb_project,
+            name=args.wandb_name,
+            config=vars(args),
+        )
+
     manifest = load_manifest(args.manifest, use_original_only=args.original_only)
     labels = load_labels(args.labels)
     meta = json.loads(args.soap_meta.read_text())
@@ -145,6 +154,16 @@ def train(args: argparse.Namespace) -> None:
 
         scheduler.step()
         val_metrics = evaluate(model, val_loader, device)
+        if args.wandb:
+            wandb.log(
+                {
+                    "epoch": epoch,
+                    "train_loss": float(np.mean(epoch_losses)),
+                    "val_mae": val_metrics["mae"],
+                    "val_rmse": val_metrics["rmse"],
+                    "val_r2": val_metrics["r2"],
+                }
+            )
         if val_metrics["mae"] < best_val_mae:
             best_val_mae = val_metrics["mae"]
             best_state = {
@@ -172,6 +191,19 @@ def train(args: argparse.Namespace) -> None:
     print("Best validation metrics:", best_state["val_metrics"])
     print("Test metrics:", test_metrics)
 
+    if args.wandb:
+        wandb.log(
+            {
+                "best_val_mae": best_state["val_metrics"]["mae"],
+                "best_val_rmse": best_state["val_metrics"]["rmse"],
+                "best_val_r2": best_state["val_metrics"]["r2"],
+                "test_mae": test_metrics["mae"],
+                "test_rmse": test_metrics["rmse"],
+                "test_r2": test_metrics["r2"],
+            }
+        )
+        wandb.finish()
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Fine-tune SetTransformer regressor with pretrained encoder.")
@@ -196,6 +228,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--test-frac", type=float, default=0.1)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--original-only", action="store_true", help="Train only on the original 3k subset.")
+    parser.add_argument("--wandb", action="store_true", help="Enable Weights & Biases logging.")
+    parser.add_argument("--wandb-project", type=str, default="mof-settransformer")
+    parser.add_argument("--wandb-name", type=str, default=None)
     return parser.parse_args()
 
 

@@ -30,4 +30,7 @@ python scripts/finetune_contrastive_regressor.py \
   --latent-dim 510 \
   --train-frac 0.8 --val-frac 0.1 --test-frac 0.1 \
   --seed 42 \
-  --original-only
+  --original-only \
+  --wandb \
+  --wandb-project mof-settransformer \
+  --wandb-name finetune_frozen_seed42
