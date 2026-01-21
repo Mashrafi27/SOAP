@@ -40,6 +40,12 @@ def load_manifest(path: Path) -> pd.DataFrame:
     return df
 
 
+def read_id_list(path: Path | None) -> set[str]:
+    if not path:
+        return set()
+    return {line.strip() for line in path.read_text().splitlines() if line.strip()}
+
+
 def augment_batch(x, lengths, atom_drop: float, feature_drop: float):
     augmented = torch.zeros_like(x)
     new_lengths = torch.zeros_like(lengths)
@@ -69,22 +75,64 @@ def simclr_loss(z1, z2, temperature: float):
     return loss
 
 
+def export_embeddings(
+    encoder: SetTransformerEncoder,
+    manifest: pd.DataFrame,
+    soap_dir: Path,
+    feature_cols,
+    max_atoms: int,
+    output_path: Path,
+    device: torch.device,
+) -> None:
+    encoder.eval()
+    rows = []
+    ids = []
+    with torch.no_grad():
+        for stem in manifest["filename"]:
+            csv_path = soap_dir / f"{stem}.csv"
+            df = pd.read_csv(csv_path, usecols=feature_cols)
+            feats = torch.from_numpy(df.to_numpy(dtype=np.float32)).to(device)
+            length = feats.shape[0]
+            feats = feats.unsqueeze(0)
+            pad = torch.zeros(1, max_atoms, feats.size(-1), device=device)
+            pad[0, :length] = feats[0]
+            lengths = torch.tensor([length], device=device)
+            emb = encoder(pad, lengths).squeeze(0).cpu().numpy()
+            rows.append(emb)
+            ids.append(stem)
+
+    columns = [f"embed_{i}" for i in range(rows[0].shape[0])]
+    df = pd.DataFrame(rows, columns=columns)
+    df.insert(0, "id", ids)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output_path, index=False)
+    print(f"Saved embeddings to {output_path}")
+
+
 def pretrain(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    wandb.login(key="2f1002514629c6ffe0f9d6d1fe10914998145aa7")
+    wandb.login()
     manifest = load_manifest(args.manifest)
-    base_df = manifest[manifest["origin"] == "original"].sort_values("combined_rank")
-    base_ids = base_df.head(args.base_size)["filename"].tolist()
-    if len(base_ids) < args.base_size:
-        raise ValueError(f"Requested base_size={args.base_size} but only found {len(base_ids)} originals.")
-    new_df = manifest[manifest["origin"] == "new"].sort_values("new_index")
-    new_ids = new_df.head(args.new_count)["filename"].tolist()
-    selected_ids = set(base_ids + new_ids)
-    manifest = manifest[manifest["filename"].isin(selected_ids)].reset_index(drop=True)
+
+    test_ids = read_id_list(args.test_ids)
+    if test_ids:
+        manifest = manifest[~manifest["filename"].isin(test_ids)].reset_index(drop=True)
+
+    if args.use_all:
+        selected_manifest = manifest
+    else:
+        base_df = manifest[manifest["origin"] == "original"].sort_values("combined_rank")
+        base_ids = base_df.head(args.base_size)["filename"].tolist()
+        if len(base_ids) < args.base_size:
+            raise ValueError(f"Requested base_size={args.base_size} but only found {len(base_ids)} originals.")
+        new_df = manifest[manifest["origin"] == "new"].sort_values("new_index")
+        new_ids = new_df.head(args.new_count)["filename"].tolist()
+        selected_ids = set(base_ids + new_ids)
+        selected_manifest = manifest[manifest["filename"].isin(selected_ids)].reset_index(drop=True)
 
     wandb.init(
         project="mof-settransformer",
-        name=f"contrastive_latent{args.latent_dim}_base{args.base_size}_new{args.new_count}",
+        name=f"contrastive_latent{args.latent_dim}_all{args.use_all}_base{args.base_size}_new{args.new_count}",
         config=vars(args),
     )
     labels = load_labels(args.labels)
@@ -93,7 +141,7 @@ def pretrain(args: argparse.Namespace) -> None:
     max_atoms = meta["max_atoms"]
 
     dataset = SoapSetDataset(
-        manifest_df=manifest,
+        manifest_df=selected_manifest,
         labels=labels,
         soap_dir=args.soap_dir,
         feature_columns=feature_cols,
@@ -140,42 +188,20 @@ def pretrain(args: argparse.Namespace) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     torch.save({"model": encoder.state_dict(), "config": vars(args)}, output_dir / "encoder.pt")
 
-    export_embeddings(encoder, manifest, args.soap_dir, feature_cols, max_atoms, output_dir / "embeddings.csv", device)
+    export_manifest = selected_manifest
+    if args.export_manifest:
+        export_manifest = load_manifest(args.export_manifest)
+
+    export_embeddings(
+        encoder,
+        export_manifest,
+        args.soap_dir,
+        feature_cols,
+        max_atoms,
+        output_dir / "embeddings.csv",
+        device,
+    )
     wandb.finish()
-
-
-def export_embeddings(
-    encoder: SetTransformerEncoder,
-    manifest: pd.DataFrame,
-    soap_dir: Path,
-    feature_cols,
-    max_atoms: int,
-    output_path: Path,
-    device: torch.device,
-) -> None:
-    encoder.eval()
-    rows = []
-    ids = []
-    with torch.no_grad():
-        for stem in manifest["filename"]:
-            csv_path = soap_dir / f"{stem}.csv"
-            df = pd.read_csv(csv_path, usecols=feature_cols)
-            feats = torch.from_numpy(df.to_numpy(dtype=np.float32)).to(device)
-            length = feats.shape[0]
-            feats = feats.unsqueeze(0)
-            pad = torch.zeros(1, max_atoms, feats.size(-1), device=device)
-            pad[0, :length] = feats[0]
-            lengths = torch.tensor([length], device=device)
-            emb = encoder(pad, lengths).squeeze(0).cpu().numpy()
-            rows.append(emb)
-            ids.append(stem)
-
-    columns = [f"embed_{i}" for i in range(rows[0].shape[0])]
-    df = pd.DataFrame(rows, columns=columns)
-    df.insert(0, "id", ids)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(output_path, index=False)
-    print(f"Saved embeddings to {output_path}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -187,6 +213,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=ROOT / "soap_pipeline_clean/outputs/set_transformer/contrastive")
     parser.add_argument("--base-size", type=int, default=3089, help="Number of original MOFs to include (from CIF_files).")
     parser.add_argument("--new-count", type=int, default=0, help="Number of new MOFs to add from the extra 3k.")
+    parser.add_argument("--use-all", action="store_true", help="Use all available rows after excluding test IDs.")
+    parser.add_argument("--test-ids", type=Path, default=None, help="Optional file with test IDs to exclude.")
+    parser.add_argument("--export-manifest", type=Path, default=None, help="Optional manifest CSV to export embeddings for.")
     parser.add_argument("--epochs", type=int, default=50)
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--lr", type=float, default=1e-3)

@@ -11,12 +11,13 @@ import json
 import sys
 from pathlib import Path
 
+import pandas as pd
+import wandb
+from tqdm import tqdm
+
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
-
-import pandas as pd
-from tqdm import tqdm
 
 from soap_pipeline_clean.pooling import POOLING_FUNCS, load_feature_matrix
 
@@ -97,23 +98,56 @@ def parse_args() -> argparse.Namespace:
         help="Pooling strategies to compute.",
     )
     parser.add_argument(
+        "--include-ids",
+        type=Path,
+        default=None,
+        help="Optional text file with one ID per line to include.",
+    )
+    parser.add_argument(
+        "--exclude-ids",
+        type=Path,
+        default=None,
+        help="Optional text file with one ID per line to exclude.",
+    )
+    parser.add_argument(
+        "--split-name",
+        type=str,
+        default="full",
+        help="Suffix for output files (e.g., trainval, test).",
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=ROOT / "soap_pipeline_clean/outputs/pools",
         help="Directory to store aggregated datasets.",
     )
+    parser.add_argument("--wandb", action="store_true", help="Log pooling stats to W&B.")
+    parser.add_argument("--wandb-project", type=str, default="mof-settransformer")
+    parser.add_argument("--wandb-name", type=str, default=None)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     manifest_df = load_manifest(args.manifest)
+    if args.include_ids:
+        include_ids = {line.strip() for line in args.include_ids.read_text().splitlines() if line.strip()}
+        manifest_df = manifest_df[manifest_df["filename"].isin(include_ids)]
+    if args.exclude_ids:
+        exclude_ids = {line.strip() for line in args.exclude_ids.read_text().splitlines() if line.strip()}
+        manifest_df = manifest_df[~manifest_df["filename"].isin(exclude_ids)]
+    manifest_df = manifest_df.reset_index(drop=True)
+
+    if args.wandb:
+        wandb.login()
+        wandb.init(project=args.wandb_project, name=args.wandb_name, config=vars(args))
+
     labels = load_labels(args.labels)
     soap_meta = json.loads(args.soap_meta.read_text())
     feature_columns = soap_meta["feature_labels"]
 
     for method in args.methods:
-        output_path = args.output_dir / f"{method}_full.csv"
+        output_path = args.output_dir / f"{method}_{args.split_name}.csv"
         aggregate_method(
             manifest_df,
             labels,
@@ -122,6 +156,18 @@ def main() -> None:
             method,
             output_path,
         )
+        if args.wandb:
+            wandb.log(
+                {
+                    "method": method,
+                    "split": args.split_name,
+                    "rows": len(manifest_df),
+                    "cols": len(feature_columns),
+                }
+            )
+
+    if args.wandb:
+        wandb.finish()
 
 
 if __name__ == "__main__":
