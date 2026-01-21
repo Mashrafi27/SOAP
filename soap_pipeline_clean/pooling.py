@@ -31,9 +31,12 @@ def per_column_pca(matrix: np.ndarray) -> np.ndarray:
     """Replicate the historical PCA pooling (1 component per column)."""
     results: List[float] = []
     for col_idx in range(matrix.shape[1]):
-        column = matrix[:, col_idx].reshape(-1, 1)
+        column = matrix[:, col_idx]
+        if np.allclose(column, column[0]):
+            results.append(0.0)
+            continue
         model = PCA(n_components=1)
-        transformed = model.fit_transform(column)
+        transformed = model.fit_transform(column.reshape(-1, 1))
         results.append(float(transformed[0, 0]))
     return np.asarray(results, dtype=float)
 
