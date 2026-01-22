@@ -20,6 +20,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manifest", type=Path, default=ROOT / "soap_pipeline_clean/metadata/mof_manifest.csv")
     parser.add_argument("--test-frac", type=float, default=0.1)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--origin", choices=("all", "original", "new"), default="all")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "soap_pipeline_clean/metadata/splits")
     return parser.parse_args()
 
@@ -28,6 +29,10 @@ def main() -> None:
     args = parse_args()
     df = pd.read_csv(args.manifest)
     df["filename"] = df["filename"].str.strip()
+
+    if args.origin != "all":
+        df = df[df["origin"] == args.origin]
+
     df = df.sample(frac=1.0, random_state=args.seed).reset_index(drop=True)
 
     test_size = int(round(len(df) * args.test_frac))
@@ -44,6 +49,7 @@ def main() -> None:
     summary = {
         "seed": args.seed,
         "test_frac": args.test_frac,
+        "origin": args.origin,
         "n_total": len(df),
         "n_test": len(test_df),
         "n_trainval": len(trainval_df),

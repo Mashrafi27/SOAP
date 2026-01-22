@@ -100,11 +100,14 @@ def main() -> None:
     parser.add_argument("--wandb-name", type=str, default="pooled_benchmarks")
     args = parser.parse_args()
 
+    table = None
     if args.wandb:
         wandb.login()
         wandb.init(project=args.wandb_project, name=args.wandb_name, config=vars(args))
+        table = wandb.Table(columns=["method", "model", "mae", "rmse", "r2", "n_train", "n_test", "n_features"])
 
     results = {}
+    step = 0
     for method in args.methods:
         train_path = args.pools_dir / f"{method}_{args.train_split}.csv"
         test_path = args.pools_dir / f"{method}_{args.test_split}.csv"
@@ -129,18 +132,31 @@ def main() -> None:
             results[method][model_name] = metrics
             print(method, model_name, metrics)
             if args.wandb:
-                wandb.log({
-                    "method": method,
-                    "model": model_name,
-                    "test_mae": metrics["mae"],
-                    "test_rmse": metrics["rmse"],
-                    "test_r2": metrics["r2"],
-                })
+                wandb.log(
+                    {
+                        "test_mae": metrics["mae"],
+                        "test_rmse": metrics["rmse"],
+                        "test_r2": metrics["r2"],
+                    },
+                    step=step,
+                )
+                table.add_data(
+                    method,
+                    model_name,
+                    metrics["mae"],
+                    metrics["rmse"],
+                    metrics["r2"],
+                    metrics["n_train"],
+                    metrics["n_test"],
+                    metrics["n_features"],
+                )
+                step += 1
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(results, indent=2))
 
     if args.wandb:
+        wandb.log({"benchmark_table": table})
         wandb.finish()
 
 
