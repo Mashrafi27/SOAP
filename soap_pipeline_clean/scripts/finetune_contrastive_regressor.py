@@ -38,9 +38,16 @@ def load_labels(path: Path) -> pd.Series:
 
 def load_manifest(path: Path, use_original_only: bool = False) -> pd.DataFrame:
     df = pd.read_csv(path)
+    df["filename"] = df["filename"].str.strip()
     if use_original_only:
         df = df[df["origin"] == "original"]
     return df.reset_index(drop=True)
+
+
+def read_id_list(path: Path | None) -> set[str]:
+    if path is None:
+        return set()
+    return {line.strip() for line in path.read_text().splitlines() if line.strip()}
 
 
 def evaluate(model, loader: DataLoader, device: torch.device) -> Dict[str, float]:
@@ -82,6 +89,22 @@ def set_encoder_requires_grad(model: SetTransformerRegressor, requires_grad: boo
         param.requires_grad = requires_grad
 
 
+def build_dataset(
+    manifest: pd.DataFrame,
+    labels: pd.Series,
+    soap_dir: Path,
+    feature_cols: list[str],
+    max_atoms: int,
+) -> SoapSetDataset:
+    return SoapSetDataset(
+        manifest_df=manifest,
+        labels=labels,
+        soap_dir=soap_dir,
+        feature_columns=feature_cols,
+        max_atoms=max_atoms,
+    )
+
+
 def train(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if args.wandb:
@@ -98,16 +121,34 @@ def train(args: argparse.Namespace) -> None:
     feature_cols = meta["feature_labels"]
     max_atoms = meta["max_atoms"]
 
-    dataset = SoapSetDataset(
-        manifest_df=manifest,
-        labels=labels,
-        soap_dir=args.soap_dir,
-        feature_columns=feature_cols,
-        max_atoms=max_atoms,
-    )
+    train_ids = read_id_list(args.train_ids)
+    val_ids = read_id_list(args.val_ids)
+    test_ids = read_id_list(args.test_ids)
 
-    split_cfg = SplitConfig(args.train_frac, args.val_frac, args.test_frac)
-    train_ds, val_ds, test_ds = stratified_split_dataset(dataset, split_cfg, seed=args.seed)
+    if train_ids or val_ids or test_ids:
+        if not train_ids or not test_ids:
+            raise ValueError("Both --train-ids and --test-ids are required for fixed splits.")
+
+        train_manifest = manifest[manifest["filename"].isin(train_ids)].reset_index(drop=True)
+        test_manifest = manifest[manifest["filename"].isin(test_ids)].reset_index(drop=True)
+
+        if val_ids:
+            val_manifest = manifest[manifest["filename"].isin(val_ids)].reset_index(drop=True)
+            overlap = set(train_manifest["filename"]).intersection(val_manifest["filename"])
+            if overlap:
+                train_manifest = train_manifest[~train_manifest["filename"].isin(overlap)].reset_index(drop=True)
+            train_ds = build_dataset(train_manifest, labels, args.soap_dir, feature_cols, max_atoms)
+            val_ds = build_dataset(val_manifest, labels, args.soap_dir, feature_cols, max_atoms)
+        else:
+            train_all = build_dataset(train_manifest, labels, args.soap_dir, feature_cols, max_atoms)
+            split_cfg = SplitConfig(1 - args.val_frac, args.val_frac, 0.0)
+            train_ds, val_ds, _ = stratified_split_dataset(train_all, split_cfg, seed=args.seed)
+
+        test_ds = build_dataset(test_manifest, labels, args.soap_dir, feature_cols, max_atoms)
+    else:
+        dataset = build_dataset(manifest, labels, args.soap_dir, feature_cols, max_atoms)
+        split_cfg = SplitConfig(args.train_frac, args.val_frac, args.test_frac)
+        train_ds, val_ds, test_ds = stratified_split_dataset(dataset, split_cfg, seed=args.seed)
 
     train_loader = build_loader(train_ds, batch_size=args.batch_size, shuffle=True)
     val_loader = build_loader(val_ds, batch_size=args.batch_size, shuffle=False)
@@ -227,6 +268,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--val-frac", type=float, default=0.1)
     parser.add_argument("--test-frac", type=float, default=0.1)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--train-ids", type=Path, default=None)
+    parser.add_argument("--val-ids", type=Path, default=None)
+    parser.add_argument("--test-ids", type=Path, default=None)
     parser.add_argument("--original-only", action="store_true", help="Train only on the original 3k subset.")
     parser.add_argument("--wandb", action="store_true", help="Enable Weights & Biases logging.")
     parser.add_argument("--wandb-project", type=str, default="mof-settransformer")
