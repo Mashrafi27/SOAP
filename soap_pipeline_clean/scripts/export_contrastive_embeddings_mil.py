@@ -11,6 +11,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+from tqdm import tqdm
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
@@ -51,7 +52,7 @@ def export_embeddings(
     rows = []
     ids = []
     with torch.no_grad():
-        for stem in manifest["filename"]:
+        for stem in tqdm(manifest["filename"], desc="Exporting MIL embeddings"):
             csv_path = soap_dir / f"{stem}.csv"
             df = pd.read_csv(csv_path, usecols=feature_cols)
             feats = torch.from_numpy(df.to_numpy(dtype=np.float32)).to(device)
