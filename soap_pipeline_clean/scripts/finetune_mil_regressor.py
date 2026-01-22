@@ -104,7 +104,10 @@ def evaluate(model, loader: DataLoader, device: torch.device) -> Dict[str, float
 
 
 def load_encoder_weights(encoder: GatedAttentionEncoder, encoder_ckpt: Path) -> None:
-    state = torch.load(encoder_ckpt, map_location="cpu")
+    try:
+        state = torch.load(encoder_ckpt, map_location="cpu", weights_only=False)
+    except TypeError:
+        state = torch.load(encoder_ckpt, map_location="cpu")
     if isinstance(state, dict) and "model" in state:
         state = state["model"]
     encoder.load_state_dict(state, strict=True)
