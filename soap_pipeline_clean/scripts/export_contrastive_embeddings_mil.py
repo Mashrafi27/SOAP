@@ -105,7 +105,10 @@ def main() -> None:
         latent_dim=args.latent_dim,
     ).to(device)
 
-    state = torch.load(args.encoder, map_location="cpu")
+    try:
+        state = torch.load(args.encoder, map_location="cpu", weights_only=False)
+    except TypeError:
+        state = torch.load(args.encoder, map_location="cpu")
     if isinstance(state, dict) and "model" in state:
         state = state["model"]
     encoder.load_state_dict(state, strict=True)
