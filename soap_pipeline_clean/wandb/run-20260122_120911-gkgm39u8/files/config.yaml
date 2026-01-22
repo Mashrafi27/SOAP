@@ -1,0 +1,130 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            mowduwbg7wt8dex8b0lw2ryvsvz6th18:
+                args:
+                    - --manifest
+                    - metadata/mof_manifest.csv
+                    - --soap-dir
+                    - outputs/soap_2d
+                    - --soap-meta
+                    - outputs/soap_2d/manifest.json
+                    - --labels
+                    - ../comb_id_labels.csv
+                    - --methods
+                    - inner
+                    - max
+                    - pca
+                    - --include-ids
+                    - metadata/splits_6089/trainval_ids.txt
+                    - --split-name
+                    - trainval_6089
+                    - --output-dir
+                    - outputs/pools
+                    - --wandb
+                    - --wandb-project
+                    - mof-settransformer
+                    - --wandb-name
+                    - pools_trainval_6089
+                codePath: soap_pipeline_clean/scripts/build_pooled_datasets.py
+                codePathLocal: scripts/build_pooled_datasets.py
+                cpu_count: 128
+                cpu_count_logical: 128
+                disk:
+                    /:
+                        total: "10737418240"
+                        used: "6142496768"
+                email: mmm9886@nyu.edu
+                executable: /home/mmm9886/.conda/envs/soap_analysis/bin/python
+                git:
+                    commit: a3bdc3d0b1d137f5dcab40bcfdcbce8d0383193b
+                    remote: git@github.com:Mashrafi27/SOAP.git
+                host: cn001
+                memory:
+                    total: "539903250432"
+                os: Linux-4.18.0-513.5.1.el8_9.x86_64-x86_64-with-glibc2.28
+                program: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean/scripts/build_pooled_datasets.py
+                python: CPython 3.9.23
+                root: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean
+                slurm:
+                    cluster_name: hpc
+                    conf: /opt/slurm/etc/slurm.conf
+                    cpus_on_node: "8"
+                    cpus_per_task: "8"
+                    gtids: "0"
+                    job_account: students
+                    job_cpus_per_node: "8"
+                    job_gid: "100"
+                    job_id: "13854535"
+                    job_name: soap_pooled_bench_6089
+                    job_nodelist: cn001
+                    job_num_nodes: "1"
+                    job_partition: nvidia
+                    job_qos: nvidias
+                    job_uid: "3621466"
+                    job_user: mmm9886
+                    jobid: "13854535"
+                    localid: "0"
+                    mem_per_node: "32768"
+                    nnodes: "1"
+                    node_aliases: (null)
+                    nodeid: "0"
+                    nodelist: cn001
+                    prio_process: "0"
+                    procid: "0"
+                    submit_dir: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean
+                    submit_host: login1.fast
+                    task_pid: "1274015"
+                    tasks_per_node: "1"
+                    topology_addr: cn-spine.leaf03.cn001
+                    topology_addr_pattern: switch.switch.node
+                    working_cluster: hpc:slurm:6816:9216:109
+                startedAt: "2026-01-22T08:09:11.759328Z"
+                writerId: mowduwbg7wt8dex8b0lw2ryvsvz6th18
+        m: []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 5
+                - 53
+                - 105
+            "2":
+                - 5
+                - 53
+                - 105
+            "3":
+                - 2
+                - 13
+                - 16
+            "4": 3.9.23
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": linux-x86_64
+exclude_ids:
+    value: null
+include_ids:
+    value: metadata/splits_6089/trainval_ids.txt
+labels:
+    value: ../comb_id_labels.csv
+manifest:
+    value: metadata/mof_manifest.csv
+methods:
+    value:
+        - inner
+        - max
+        - pca
+output_dir:
+    value: outputs/pools
+soap_dir:
+    value: outputs/soap_2d
+soap_meta:
+    value: outputs/soap_2d/manifest.json
+split_name:
+    value: trainval_6089
+wandb:
+    value: true
+wandb_name:
+    value: pools_trainval_6089
+wandb_project:
+    value: mof-settransformer

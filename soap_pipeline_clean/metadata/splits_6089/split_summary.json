@@ -1,0 +1,12 @@
+{
+  "seed": 42,
+  "test_frac": 0.1,
+  "origin": "all",
+  "n_total": 6089,
+  "n_test": 609,
+  "n_trainval": 5480,
+  "n_test_original": 302,
+  "n_test_new": 307,
+  "n_trainval_original": 2787,
+  "n_trainval_new": 2693
+}

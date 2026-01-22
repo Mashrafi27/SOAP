@@ -1,0 +1,153 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            2xb4d139w3kruypb92cotllqhk08t9hy:
+                args:
+                    - --manifest
+                    - metadata/mof_manifest.csv
+                    - --soap-dir
+                    - outputs/soap_2d
+                    - --soap-meta
+                    - outputs/soap_2d/manifest.json
+                    - --labels
+                    - ../comb_id_labels.csv
+                    - --output-dir
+                    - outputs/set_transformer/contrastive_full
+                    - --use-all
+                    - --test-ids
+                    - metadata/splits/test_ids.txt
+                    - --epochs
+                    - "80"
+                    - --batch-size
+                    - "16"
+                    - --latent-dim
+                    - "510"
+                codePath: soap_pipeline_clean/scripts/pretrain_contrastive.py
+                codePathLocal: scripts/pretrain_contrastive.py
+                cpu_count: 40
+                cpu_count_logical: 40
+                cudaVersion: "13.0"
+                disk:
+                    /:
+                        total: "10737418240"
+                        used: "6142517248"
+                email: mmm9886@nyu.edu
+                executable: /home/mmm9886/.conda/envs/soap_analysis/bin/python
+                git:
+                    commit: 8a603d42acc23c5abb3520dd88bb8541bf841716
+                    remote: git@github.com:Mashrafi27/SOAP.git
+                gpu: Tesla V100-PCIE-32GB
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-PCIE-32GB
+                      uuid: GPU-2b411abe-011f-ca6b-0cb7-337bfcda7b6b
+                host: dn008
+                memory:
+                    total: "404863488000"
+                os: Linux-4.18.0-513.5.1.el8_9.x86_64-x86_64-with-glibc2.28
+                program: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean/scripts/pretrain_contrastive.py
+                python: CPython 3.9.23
+                root: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean
+                slurm:
+                    cluster_name: hpc
+                    conf: /opt/slurm/etc/slurm.conf
+                    cpus_on_node: "8"
+                    cpus_per_task: "8"
+                    gtids: "0"
+                    job_account: students
+                    job_cpus_per_node: "8"
+                    job_gid: "100"
+                    job_gpus: "0"
+                    job_id: "13841804"
+                    job_name: soap_contrastive_all
+                    job_nodelist: dn008
+                    job_num_nodes: "1"
+                    job_partition: nvidia
+                    job_qos: nvidias
+                    job_uid: "3621466"
+                    job_user: mmm9886
+                    jobid: "13841804"
+                    localid: "0"
+                    mem_per_node: "65536"
+                    nnodes: "1"
+                    node_aliases: (null)
+                    nodeid: "0"
+                    nodelist: dn008
+                    prio_process: "0"
+                    procid: "0"
+                    submit_dir: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean
+                    submit_host: login4.fast
+                    task_pid: "752447"
+                    tasks_per_node: "1"
+                    topology_addr: dn-spine.dn21.dn008
+                    topology_addr_pattern: switch.switch.node
+                    working_cluster: hpc:slurm:6816:9216:109
+                startedAt: "2026-01-21T09:43:30.018940Z"
+                writerId: 2xb4d139w3kruypb92cotllqhk08t9hy
+        m: []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+                - 105
+            "2":
+                - 1
+                - 5
+                - 53
+                - 105
+            "3":
+                - 2
+                - 13
+                - 16
+            "4": 3.9.23
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": linux-x86_64
+atom_drop:
+    value: 0.2
+base_size:
+    value: 3089
+batch_size:
+    value: 16
+dim_hidden:
+    value: 256
+epochs:
+    value: 80
+export_manifest:
+    value: null
+feature_drop:
+    value: 0.1
+labels:
+    value: ../comb_id_labels.csv
+latent_dim:
+    value: 510
+lr:
+    value: 0.001
+manifest:
+    value: metadata/mof_manifest.csv
+new_count:
+    value: 0
+num_heads:
+    value: 4
+num_inds:
+    value: 32
+output_dir:
+    value: outputs/set_transformer/contrastive_full
+soap_dir:
+    value: outputs/soap_2d
+soap_meta:
+    value: outputs/soap_2d/manifest.json
+temperature:
+    value: 0.1
+test_ids:
+    value: metadata/splits/test_ids.txt
+use_all:
+    value: true
+weight_decay:
+    value: 1e-05

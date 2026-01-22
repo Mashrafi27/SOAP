@@ -1,0 +1,1 @@
+{"_runtime":154,"model":"lgbm","test_r2":0.7058087006335952,"_timestamp":1.7690686929935415e+09,"_step":17,"_wandb":{"runtime":154},"method":"pca","test_mae":2.9404459456239347,"test_rmse":3.7801250664678285}

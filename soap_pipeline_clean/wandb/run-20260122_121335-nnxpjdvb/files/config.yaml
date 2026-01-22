@@ -1,0 +1,140 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            xdydnu4nfiwf9jdwz42mm62nw72ceb2s:
+                args:
+                    - --pools-dir
+                    - outputs/pools
+                    - --methods
+                    - inner
+                    - max
+                    - pca
+                    - --train-split
+                    - trainval_3089
+                    - --test-split
+                    - test_3089
+                    - --models
+                    - ridge
+                    - gbr
+                    - rf
+                    - svr
+                    - xgb
+                    - lgbm
+                    - --seed
+                    - "42"
+                    - --output
+                    - outputs/pools/benchmark_metrics_3089.json
+                    - --wandb
+                    - --wandb-project
+                    - mof-settransformer
+                    - --wandb-name
+                    - pooled_benchmarks_3089
+                codePath: soap_pipeline_clean/scripts/run_pooled_benchmarks.py
+                codePathLocal: scripts/run_pooled_benchmarks.py
+                cpu_count: 128
+                cpu_count_logical: 128
+                disk:
+                    /:
+                        total: "10737418240"
+                        used: "6142496768"
+                email: mmm9886@nyu.edu
+                executable: /home/mmm9886/.conda/envs/soap_analysis/bin/python
+                git:
+                    commit: a3bdc3d0b1d137f5dcab40bcfdcbce8d0383193b
+                    remote: git@github.com:Mashrafi27/SOAP.git
+                host: cn001
+                memory:
+                    total: "539903250432"
+                os: Linux-4.18.0-513.5.1.el8_9.x86_64-x86_64-with-glibc2.28
+                program: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean/scripts/run_pooled_benchmarks.py
+                python: CPython 3.9.23
+                root: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean
+                slurm:
+                    cluster_name: hpc
+                    conf: /opt/slurm/etc/slurm.conf
+                    cpus_on_node: "8"
+                    cpus_per_task: "8"
+                    gtids: "0"
+                    job_account: students
+                    job_cpus_per_node: "8"
+                    job_gid: "100"
+                    job_id: "13854532"
+                    job_name: soap_pooled_bench_3089
+                    job_nodelist: cn001
+                    job_num_nodes: "1"
+                    job_partition: nvidia
+                    job_qos: nvidias
+                    job_uid: "3621466"
+                    job_user: mmm9886
+                    jobid: "13854532"
+                    localid: "0"
+                    mem_per_node: "32768"
+                    nnodes: "1"
+                    node_aliases: (null)
+                    nodeid: "0"
+                    nodelist: cn001
+                    prio_process: "0"
+                    procid: "0"
+                    submit_dir: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean
+                    submit_host: login1.fast
+                    task_pid: "1274004"
+                    tasks_per_node: "1"
+                    topology_addr: cn-spine.leaf03.cn001
+                    topology_addr_pattern: switch.switch.node
+                    working_cluster: hpc:slurm:6816:9216:109
+                startedAt: "2026-01-22T08:13:35.916547Z"
+                writerId: xdydnu4nfiwf9jdwz42mm62nw72ceb2s
+        m: []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 5
+                - 6
+                - 8
+                - 53
+                - 105
+            "2":
+                - 5
+                - 6
+                - 8
+                - 53
+                - 105
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.9.23
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": linux-x86_64
+methods:
+    value:
+        - inner
+        - max
+        - pca
+models:
+    value:
+        - ridge
+        - gbr
+        - rf
+        - svr
+        - xgb
+        - lgbm
+output:
+    value: outputs/pools/benchmark_metrics_3089.json
+pools_dir:
+    value: outputs/pools
+seed:
+    value: 42
+test_split:
+    value: test_3089
+train_split:
+    value: trainval_3089
+wandb:
+    value: true
+wandb_name:
+    value: pooled_benchmarks_3089
+wandb_project:
+    value: mof-settransformer

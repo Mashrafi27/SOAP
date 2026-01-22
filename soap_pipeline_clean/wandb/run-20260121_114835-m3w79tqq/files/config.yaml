@@ -1,0 +1,96 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            1x033gsahroupp41huyauwjii7qq5v9w:
+                args:
+                    - --manifest
+                    - metadata/mof_manifest.csv
+                    - --soap-dir
+                    - outputs/soap_2d
+                    - --soap-meta
+                    - outputs/soap_2d/manifest.json
+                    - --labels
+                    - ../comb_id_labels.csv
+                    - --methods
+                    - inner
+                    - max
+                    - pca
+                    - --include-ids
+                    - metadata/splits/trainval_ids.txt
+                    - --split-name
+                    - trainval
+                    - --output-dir
+                    - outputs/pools
+                    - --wandb
+                    - --wandb-project
+                    - mof-settransformer
+                    - --wandb-name
+                    - pools_trainval
+                codePath: soap_pipeline_clean/scripts/build_pooled_datasets.py
+                codePathLocal: scripts/build_pooled_datasets.py
+                cpu_count: 64
+                cpu_count_logical: 64
+                disk:
+                    /:
+                        total: "10737418240"
+                        used: "2549497856"
+                email: mmm9886@nyu.edu
+                executable: /home/mmm9886/.conda/envs/soap_analysis/bin/python
+                git:
+                    commit: 88081b2c17a1f7a73ef04d5ffb771ce4bb8aaaf6
+                    remote: git@github.com:Mashrafi27/SOAP.git
+                host: login4.fast
+                memory:
+                    total: "269643816960"
+                os: Linux-4.18.0-193.6.3.el8_2.x86_64-x86_64-with-glibc2.28
+                program: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean/scripts/build_pooled_datasets.py
+                python: CPython 3.9.23
+                root: /scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean
+                startedAt: "2026-01-21T07:48:35.626692Z"
+                writerId: 1x033gsahroupp41huyauwjii7qq5v9w
+        m: []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 5
+                - 53
+                - 105
+            "2":
+                - 5
+                - 53
+                - 105
+            "3":
+                - 13
+                - 16
+            "4": 3.9.23
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": linux-x86_64
+exclude_ids:
+    value: null
+include_ids:
+    value: metadata/splits/trainval_ids.txt
+labels:
+    value: ../comb_id_labels.csv
+manifest:
+    value: metadata/mof_manifest.csv
+methods:
+    value:
+        - inner
+        - max
+        - pca
+output_dir:
+    value: outputs/pools
+soap_dir:
+    value: outputs/soap_2d
+soap_meta:
+    value: outputs/soap_2d/manifest.json
+split_name:
+    value: trainval
+wandb:
+    value: true
+wandb_name:
+    value: pools_trainval
+wandb_project:
+    value: mof-settransformer

@@ -1,0 +1,53 @@
+{
+  "os":  "Linux-4.18.0-193.6.3.el8_2.x86_64-x86_64-with-glibc2.28",
+  "python":  "CPython 3.9.23",
+  "startedAt":  "2026-01-21T07:46:01.938753Z",
+  "args":  [
+    "--manifest",
+    "metadata/mof_manifest.csv",
+    "--soap-dir",
+    "outputs/soap_2d",
+    "--soap-meta",
+    "outputs/soap_2d/manifest.json",
+    "--labels",
+    "../comb_id_labels.csv",
+    "--methods",
+    "inner",
+    "max",
+    "pca",
+    "--include-ids",
+    "metadata/splits/trainval_ids.txt",
+    "--split-name",
+    "trainval",
+    "--output-dir",
+    "outputs/pools",
+    "--wandb",
+    "--wandb-project",
+    "mof-settransformer",
+    "--wandb-name",
+    "pools_trainval"
+  ],
+  "program":  "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean/scripts/build_pooled_datasets.py",
+  "codePath":  "soap_pipeline_clean/scripts/build_pooled_datasets.py",
+  "codePathLocal":  "scripts/build_pooled_datasets.py",
+  "git":  {
+    "remote":  "git@github.com:Mashrafi27/SOAP.git",
+    "commit":  "88081b2c17a1f7a73ef04d5ffb771ce4bb8aaaf6"
+  },
+  "email":  "mmm9886@nyu.edu",
+  "root":  "/scratch/mmm9886/Chignolin_Trajectory/SOAP_research/soap_pipeline_clean",
+  "host":  "login4.fast",
+  "executable":  "/home/mmm9886/.conda/envs/soap_analysis/bin/python",
+  "cpu_count":  64,
+  "cpu_count_logical":  64,
+  "disk":  {
+    "/":  {
+      "total":  "10737418240",
+      "used":  "2549497856"
+    }
+  },
+  "memory":  {
+    "total":  "269643816960"
+  },
+  "writerId":  "scaolj78ra4pafuui4hsf90ws362aok4"
+}
