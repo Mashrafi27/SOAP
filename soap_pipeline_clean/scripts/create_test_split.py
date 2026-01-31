@@ -46,6 +46,13 @@ def main() -> None:
     test_df.to_csv(args.output_dir / "test_manifest.csv", index=False)
     trainval_df.to_csv(args.output_dir / "trainval_manifest.csv", index=False)
 
+    # Also write trainval subsets for original-only after removing test IDs.
+    test_ids = set(test_df["filename"].tolist())
+    original_df = df[df["origin"] == "original"].copy()
+    trainval_original = original_df[~original_df["filename"].isin(test_ids)].copy()
+    (args.output_dir / "trainval_ids_original.txt").write_text("\n".join(trainval_original["filename"].tolist()))
+    trainval_original.to_csv(args.output_dir / "trainval_manifest_original.csv", index=False)
+
     summary = {
         "seed": args.seed,
         "test_frac": args.test_frac,
@@ -57,6 +64,7 @@ def main() -> None:
         "n_test_new": int((test_df["origin"] == "new").sum()),
         "n_trainval_original": int((trainval_df["origin"] == "original").sum()),
         "n_trainval_new": int((trainval_df["origin"] == "new").sum()),
+        "n_trainval_original_filtered": int(len(trainval_original)),
     }
     (args.output_dir / "split_summary.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary, indent=2))
