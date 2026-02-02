@@ -23,7 +23,7 @@ python scripts/pretrain_contrastive_mil.py \
   --soap-meta outputs/soap_2d/manifest.json \
   --labels ../comb_id_labels.csv \
   --pooled-dir outputs/pools \
-  --pool-methods max \
+  --pool-methods inner max pca \
   --pool-split trainval \
   --include-ids metadata/splits/trainval_ids.txt \
   --output-dir outputs/set_transformer/contrastive_mil \

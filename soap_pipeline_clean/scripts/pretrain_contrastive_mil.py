@@ -178,16 +178,23 @@ def pretrain(args: argparse.Namespace) -> None:
         }
     ).to(device)
 
-    params = list(encoder.parameters()) + list(proj.parameters()) + list(pool_heads.parameters())
+    reg_head = torch.nn.Sequential(
+        torch.nn.Linear(args.latent_dim, args.reg_hidden),
+        torch.nn.ReLU(),
+        torch.nn.Linear(args.reg_hidden, 1),
+    ).to(device)
+
+    params = list(encoder.parameters()) + list(proj.parameters()) + list(pool_heads.parameters()) + list(reg_head.parameters())
     optimizer = torch.optim.Adam(params, lr=args.lr, weight_decay=args.weight_decay)
 
     for epoch in trange(1, args.epochs + 1, desc="Contrastive pretraining (MIL)"):
         encoder.train()
         epoch_loss = 0.0
         for batch in loader:
-            x, lengths, _, pooled_views = batch
+            x, lengths, labels_batch, pooled_views = batch
             x = x.to(device)
             lengths = lengths.to(device)
+            labels_batch = labels_batch.to(device)
 
             if args.atom_drop or args.feature_drop:
                 x_aug, len_aug = augment_batch(x, lengths, args.atom_drop, args.feature_drop)
@@ -205,10 +212,15 @@ def pretrain(args: argparse.Namespace) -> None:
                 loss = loss + info_nce(z_enc, z_pool, args.temperature)
             loss = loss / len(args.pool_methods)
 
+            # regression loss on uptake capacity
+            preds = reg_head(z_enc).squeeze(-1)
+            reg_loss = F.mse_loss(preds, labels_batch)
+            total_loss = loss + args.reg_weight * reg_loss
+
             optimizer.zero_grad()
-            loss.backward()
+            total_loss.backward()
             optimizer.step()
-            epoch_loss += loss.item()
+            epoch_loss += total_loss.item()
 
         avg_loss = epoch_loss / len(loader)
         if args.wandb:
@@ -230,7 +242,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--soap-meta", type=Path, default=ROOT / "soap_pipeline_clean/outputs/soap_2d/manifest.json")
     parser.add_argument("--labels", type=Path, default=ROOT / "comb_id_labels.csv")
     parser.add_argument("--pooled-dir", type=Path, default=ROOT / "soap_pipeline_clean/outputs/pools")
-    parser.add_argument("--pool-methods", nargs="+", default=["max"])
+    parser.add_argument("--pool-methods", nargs="+", default=["inner", "max", "pca"])
     parser.add_argument("--pool-split", type=str, default="trainval")
     parser.add_argument("--include-ids", type=Path, default=ROOT / "soap_pipeline_clean/metadata/splits/trainval_ids.txt")
     parser.add_argument("--exclude-ids", type=Path, default=None)
@@ -245,6 +257,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--atom-drop", type=float, default=0.2)
     parser.add_argument("--feature-drop", type=float, default=0.1)
     parser.add_argument("--temperature", type=float, default=0.1)
+    parser.add_argument("--reg-hidden", type=int, default=256)
+    parser.add_argument("--reg-weight", type=float, default=0.1)
     parser.add_argument("--wandb", action="store_true")
     parser.add_argument("--wandb-project", type=str, default="mof-settransformer")
     parser.add_argument("--wandb-name", type=str, default=None)
