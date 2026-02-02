@@ -167,6 +167,7 @@ def pretrain(args: argparse.Namespace) -> None:
         feature_dim=len(feature_cols),
         hidden_dim=args.hidden_dim,
         latent_dim=args.latent_dim,
+        dropout=args.dropout,
     ).to(device)
 
     proj = torch.nn.Linear(args.latent_dim, args.latent_dim).to(device)
@@ -229,7 +230,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--soap-meta", type=Path, default=ROOT / "soap_pipeline_clean/outputs/soap_2d/manifest.json")
     parser.add_argument("--labels", type=Path, default=ROOT / "comb_id_labels.csv")
     parser.add_argument("--pooled-dir", type=Path, default=ROOT / "soap_pipeline_clean/outputs/pools")
-    parser.add_argument("--pool-methods", nargs="+", default=["inner", "max", "pca"])
+    parser.add_argument("--pool-methods", nargs="+", default=["max"])
     parser.add_argument("--pool-split", type=str, default="trainval")
     parser.add_argument("--include-ids", type=Path, default=ROOT / "soap_pipeline_clean/metadata/splits/trainval_ids.txt")
     parser.add_argument("--exclude-ids", type=Path, default=None)
@@ -239,7 +240,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=1e-5)
     parser.add_argument("--latent-dim", type=int, default=256)
-    parser.add_argument("--hidden-dim", type=int, default=256)
+    parser.add_argument("--hidden-dim", type=int, default=512)
+    parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--atom-drop", type=float, default=0.2)
     parser.add_argument("--feature-drop", type=float, default=0.1)
     parser.add_argument("--temperature", type=float, default=0.1)

@@ -89,7 +89,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--exclude-ids", type=Path, default=None)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--latent-dim", type=int, default=256)
-    parser.add_argument("--hidden-dim", type=int, default=256)
+    parser.add_argument("--hidden-dim", type=int, default=512)
     return parser.parse_args()
 
 

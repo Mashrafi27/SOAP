@@ -23,14 +23,14 @@ python scripts/pretrain_contrastive_mil.py \
   --soap-meta outputs/soap_2d/manifest.json \
   --labels ../comb_id_labels.csv \
   --pooled-dir outputs/pools \
-  --pool-methods inner max pca \
+  --pool-methods max \
   --pool-split trainval \
   --include-ids metadata/splits/trainval_ids.txt \
   --output-dir outputs/set_transformer/contrastive_mil \
   --epochs 80 \
   --batch-size 16 \
   --latent-dim 256 \
-  --hidden-dim 256 \
+  --hidden-dim 512 \
   --wandb \
   --wandb-project mof-settransformer \
   --wandb-name contrastive_mil_poolalign

@@ -6,17 +6,30 @@ import torch.nn.functional as F
 
 
 class GatedAttentionEncoder(nn.Module):
-    def __init__(self, feature_dim: int, hidden_dim: int = 256, latent_dim: int = 256):
+    def __init__(
+        self,
+        feature_dim: int,
+        hidden_dim: int = 512,
+        latent_dim: int = 256,
+        dropout: float = 0.1,
+    ):
         super().__init__()
         self.feature_dim = feature_dim
         self.hidden_dim = hidden_dim
         self.latent_dim = latent_dim
+        self.dropout = dropout
 
+        # Deeper/wider instance encoder with normalization + dropout.
         self.instance_encoder = nn.Sequential(
             nn.Linear(feature_dim, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.LayerNorm(hidden_dim),
         )
         self.attn_v = nn.Linear(hidden_dim, hidden_dim)
         self.attn_u = nn.Linear(hidden_dim, hidden_dim)

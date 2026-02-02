@@ -27,7 +27,7 @@ python scripts/finetune_mil_regressor.py \
   --epochs 80 \
   --batch-size 16 \
   --latent-dim 256 \
-  --hidden-dim 256 \
+  --hidden-dim 512 \
   --predictor-hidden 256 \
   --train-ids metadata/splits/trainval_ids.txt \
   --test-ids metadata/splits/test_ids.txt \
